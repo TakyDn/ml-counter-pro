@@ -1,39 +1,38 @@
 name: Android Build
 
+name: Android Build
+
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
-
+    name: Build APK
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
+          python-version: '3.10'
 
-      - name: Install Python dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install buildozer cython
+      - name: Build with Buildozer (Docker)
+        uses: ArtemSBulgakov/buildozer-action@v1
+        id: buildozer
+        with:
+          # se seu main.py e buildozer.spec estão na raiz do repo, deixe workdir: .
+          workdir: .
+          buildozer_version: stable
+          buildozer_cmd: "android debug"
 
-      - name: Install system dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y zip unzip openjdk-17-jdk python3-pip python3-setuptools \
-          git build-essential libssl-dev libffi-dev python3-dev \
-          libncurses5 libncurses5-dev libtinfo5
-
-      - name: Build APK
-        run: buildozer android debug
-
-      - name: Upload APK
+      - name: Upload APK artifact
+        if: success() && steps.buildozer.outputs.filename != ''
         uses: actions/upload-artifact@v4
         with:
           name: mlcounterpro-apk
-          path: bin/*.apk
+          path: ${{ steps.buildozer.outputs.filename }}
