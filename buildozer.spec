@@ -1,8 +1,7 @@
 [app]
-
 title = ML COUNTER PRO
 package.name = mlcounterpro
-package.domain = org.taky
+package.domain = org.takydn
 
 source.dir = .
 source.include_exts = py,png,jpg,kv,atlas
@@ -14,10 +13,10 @@ requirements = python3,kivy
 orientation = portrait
 fullscreen = 0
 
-# ===== ANDROID CONFIG ESTÁVEL =====
+# Android (ajuste se quiser versões específicas)
+# versões razoáveis: android.api = 33, android.minapi = 21
 android.api = 33
 android.minapi = 21
-android.sdk = 33
 android.ndk = 25b
 android.build_tools = 33.0.2
 android.accept_sdk_license = True
